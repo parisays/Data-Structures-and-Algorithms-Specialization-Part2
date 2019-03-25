@@ -9,14 +9,17 @@ namespace A3
     public class MinHeap
     {
         public List<Node> Nodes;
-        public int Size;
+        public int Size { get; set; }
+        public int MaxSize { get; set; }
+
         public MinHeap(List<Node> nodes)
         {
-            this.Nodes = nodes;
-            this.Size = nodes.Count;
+            this.Nodes = nodes.OrderBy(n => n.Key).ToList();
+            this.MaxSize = nodes.Count;
+            this.Size = this.MaxSize;
         }
 
-
+        
         public Node ExtractMin()
         {
             (Nodes[0], Nodes[Size - 1]) = (Nodes[Size - 1], Nodes[0]);
@@ -30,7 +33,7 @@ namespace A3
             long oldPriority = Nodes.ElementAt(index).Distance;
             Nodes[index].Distance = priority;
 
-            if (priority < oldPriority)
+            if (priority <= oldPriority)
                 SiftUp(index);
             else
                 SiftDown(index);
@@ -72,7 +75,7 @@ namespace A3
             }
         }
 
-        private int Parent(int i) => (int)Math.Floor((double)i / 2);
+        private int Parent(int i) => (i - 1) / 2;
 
         private int RightChild(int index) => 2 * index + 2;
 

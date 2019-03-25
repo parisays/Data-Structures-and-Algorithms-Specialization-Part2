@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,8 +15,11 @@ namespace A3
         public List<Node> Graph { get; private set; }
         private List<Node> RGraph { get; set; }
 
-        private List<Node> Processed { get; set; }
-        private List<Node> RProcessed { get; set; }
+        private List<Node> ForwardProcss { get; set; }
+        private List<Node> ReverseProcess { get; set; }
+
+        private PriorityQueue ForwardHeap;
+        private PriorityQueue ReverseHeap;
 
         public override string Process(string inStr) =>
             TestTools.Process(inStr, (Func<long, long, long[][], long, long[][], long[]>)Solve);
@@ -24,11 +28,107 @@ namespace A3
                               long[][] edges, long QueriesCount,
                               long[][] Queries)
         {
+            CreateGraph(NodeCount, EdgeCount, edges);
 
+            long[] result = new long[QueriesCount];
+            
+            for (int i = 0; i < QueriesCount; i++)
+                result[i] = BidirectionalDijkstra(Queries[i][0], Queries[i][1], NodeCount);
+
+            return result;
+
+        }
+
+       
+        private long BidirectionalDijkstra(long source, long target, long nodeCount)
+        {
+            if (source == target)
+                return 0;
+
+            Setup(nodeCount, source, target);
+
+            while(ForwardHeap.Size>0 && ReverseHeap.Size>0)
+            {
+                var forward = ForwardHeap.ExtractMin();
+
+                foreach(var neighbor in forward.AdjacentNodes)
+                {
+                    if(neighbor.Item1.Distance > forward.Distance + neighbor.Item2)
+                    {
+                        neighbor.Item1.Previous = forward;
+
+                        if (ForwardHeap.NodesList.Contains(neighbor.Item1))
+                            ForwardHeap.ChangePriority(Array.IndexOf(ForwardHeap.NodesList, neighbor.Item1)
+                                , forward.Distance + neighbor.Item2);
+                        else
+                        {
+                            neighbor.Item1.Distance = forward.Distance + neighbor.Item2;
+                            ForwardHeap.Insert(neighbor.Item1);
+                        }
+                    }
+                }
+
+                ForwardProcss.Add(forward);
+                if (ReverseProcess.Exists(v => v.Key == forward.Key))
+                    return ShortestPath();
+
+                var reverse = ReverseHeap.ExtractMin();
+
+                foreach(var neighbor in reverse.AdjacentNodes)
+                {
+                    if(reverse.Distance + neighbor.Item2 < neighbor.Item1.Distance)
+                    {
+                        neighbor.Item1.Previous = reverse;
+                        if (ReverseHeap.NodesList.Contains(neighbor.Item1))
+                            ReverseHeap.ChangePriority(Array.IndexOf(ReverseHeap.NodesList, neighbor.Item1),
+                                reverse.Distance + neighbor.Item2);
+                        else
+                        {
+                            neighbor.Item1.Distance = reverse.Distance + neighbor.Item2;
+                            ReverseHeap.Insert(neighbor.Item1);
+                        }
+                    }
+                }
+
+                ReverseProcess.Add(reverse);
+                if (ForwardProcss.Exists(v => v.Key == reverse.Key))
+                    return ShortestPath();
+            }
+
+            return -1;
+        }
+
+        
+        private long ShortestPath( )
+        {
+            long distance = long.MaxValue;
+            
+            foreach (var node in ForwardProcss)
+            {
+                var reverse = RGraph.Find(n => n.Key == node.Key);
+
+                if (node.Distance != long.MaxValue && reverse.Distance != long.MaxValue &&
+                        distance > node.Distance + reverse.Distance)
+                    distance = node.Distance + reverse.Distance;
+            }
+
+            foreach(var node in ReverseProcess)
+            {
+                var forward = Graph.Find(n => n.Key == node.Key);
+                if (node.Distance != long.MaxValue && forward.Distance != long.MaxValue &&
+                        distance > node.Distance + forward.Distance)
+                    distance = node.Distance + forward.Distance;
+            }
+
+            return (distance == long.MaxValue) ? -1 : distance;
+        }
+
+        private void CreateGraph(long nodeCount, long edgeCount, long[][] edges)
+        {
             Graph = new List<Node>();
             RGraph = new List<Node>();
 
-            for (long i = 1; i <= NodeCount; i++)
+            for (long i = 1; i <= nodeCount; i++)
             {
                 Graph.Add(new Node(i));
                 RGraph.Add(new Node(i));
@@ -49,151 +149,25 @@ namespace A3
                 RGraph[(int)edge[1] - 1].AdjacentNodes.Add(reversedEdge);
 
             }
-            
-            return BidirectionalDijkstra(Queries, NodeCount);
-
         }
 
-        private long[] BidirectionalDijkstra(long[][] Queries, long nodeCount)
+        private void Setup(long nodeCount, long source, long target)
         {
-            List<long> result = new List<long>();
-            foreach (var query in Queries)
-            {
-                if (query[0] == query[1])
-                    result.Add(0);
+            Graph.ForEach(n => n.Distance = long.MaxValue);
+            RGraph.ForEach(n => n.Distance = long.MaxValue);
 
-                else
-                {
-                    for (int i = 0; i < nodeCount; i++)
-                    {
-                        Graph[i].Distance = long.MaxValue;
-                        RGraph[i].Distance = long.MaxValue;
-                        Graph[i].Previous = null;
-                        RGraph[i].Previous = null;
-                    }
+            ForwardHeap = new PriorityQueue(nodeCount);
+            ReverseHeap = new PriorityQueue(nodeCount);
 
+            ForwardProcss = new List<Node>();
+            ReverseProcess = new List<Node>();
 
-                    Processed = new List<Node>();
-                    RProcessed = new List<Node>();
+            Graph[(int)source - 1].Distance = 0;
+            RGraph[(int)target - 1].Distance = 0;
 
-                    MinHeap heap = new MinHeap(Graph);
-                    MinHeap rHeap = new MinHeap(RGraph);
-                    
-                    heap.ChangePriority( heap.Nodes.IndexOf(
-                            heap.Nodes.Find( v=> v.Key == query[0]))
-                            , 0);
-                    rHeap.ChangePriority( rHeap.Nodes.IndexOf( 
-                            rHeap.Nodes.Find( v=> v.Key == query[1]) )
-                            , 0);
-
-                    do
-                    {
-                        var vertex = heap.ExtractMin();
-
-                        foreach (var neighbor in vertex.AdjacentNodes)
-                        {
-                            if (vertex.Distance != long.MaxValue
-                                        && vertex.Distance + neighbor.Item2 < neighbor.Item1.Distance)
-                            {
-                                //if (vertex.Key == query[1] && neighbor.Item1.Key == query[0])
-                                //{
-                                //    result.Add(-1);
-                                //    break;
-                                //}
-                                neighbor.Item1.Previous = vertex;
-                                heap.ChangePriority(heap.Nodes.IndexOf(neighbor.Item1),
-                                                vertex.Distance + neighbor.Item2);
-                            }
-
-                            Processed.Add(neighbor.Item1);
-
-                        }
-
-                        if (RProcessed.Exists(v => v.Key == vertex.Key))
-                        {
-                            result.Add(ShortestPath(query[0], query[1]));
-                            break;
-                        }
-
-                        var vertexR = rHeap.ExtractMin();
-                        foreach (var neighbor in vertexR.AdjacentNodes)
-                        {
-                            if (vertexR.Distance != long.MaxValue
-                                        && vertexR.Distance + neighbor.Item2 < neighbor.Item1.Distance)
-                            {
-
-                                neighbor.Item1.Previous = vertexR;
-                                rHeap.ChangePriority(rHeap.Nodes.IndexOf(neighbor.Item1),
-                                                vertexR.Distance + neighbor.Item2);
-                            }
-
-                            RProcessed.Add(neighbor.Item1);
-
-                        }
-
-                        if (Processed.Exists(v => v.Key == vertexR.Key))
-                        {
-                            result.Add(ShortestPath(query[0], query[1]));
-                            break;
-                        }
-
-                        if(heap.Size == 0 || rHeap.Size == 0)
-                        {
-                            result.Add(-1);
-                            break;
-                        }
-
-                    } while (true);
-                }
-
-
-            }
-
-            return result.ToArray();
+            ForwardHeap.Insert(Graph[(int)source - 1]);
+            ReverseHeap.Insert(RGraph[(int)target - 1]);
         }
-
-        private long ShortestPath(long source, long target)
-        {
-            long distance = long.MaxValue;
-            Node uBest = null;
-            List<Node> allProcessedNodes = new List<Node>();
-
-            allProcessedNodes.AddRange(Processed);
-            allProcessedNodes.AddRange(RProcessed);
-
-            foreach (var n in allProcessedNodes)
-            {
-                var u = Graph.Find(v => v.Key == n.Key);
-                var uR = RGraph.Find(v => v.Key == n.Key);
-
-                if (u.Distance != long.MaxValue && uR.Distance != long.MaxValue
-                    && u.Distance + uR.Distance < distance)
-                {
-                    uBest = n;
-                    distance = u.Distance + uR.Distance;
-                }
-            }
-
-            //List<Node> path = new List<Node>();
-            //Node last = Graph.Find(n => n.Key == uBest.Key);
-
-            //while(last.Key != source)
-            //{
-            //    path.Add(last);
-            //    last = last.Previous;
-            //}
-
-            //path.Reverse();
-            //last = RGraph.Find(n => n.Key == uBest.Key);
-
-            //while (last.Key != target)
-            //{
-            //    last = last.Previous;
-            //    path.Add(last);
-            //}
-
-            return (distance == long.MaxValue) ? -1: distance;
-        }
-
     }
+
 }

@@ -47,12 +47,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MinHeap.cs" />
+    <Compile Include="PriorityQueue.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Q1MinCost.cs" />
     <Compile Include="Q2DetectingAnomalies.cs" />
     <Compile Include="Q3ExchangingMoney.cs" />
     <Compile Include="Q4FriendSuggestion.cs" />
+    <Compile Include="Q4FriendSuggestion2.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
