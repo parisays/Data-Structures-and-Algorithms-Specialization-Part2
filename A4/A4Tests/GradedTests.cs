@@ -25,7 +25,7 @@ namespace A4.Tests
             foreach (var p in problems)
             {
                 TestTools.RunLocalTest("A4", p.Process, p.TestDataName, 
-                        Verifier: p.Verifier);
+                        p.Verifier);
             }
         }
     }

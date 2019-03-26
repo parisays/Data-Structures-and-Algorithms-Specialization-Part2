@@ -17,16 +17,16 @@ namespace A3.Tests
         public void SolveTest()
         {
             Processor[] problems = new Processor[] {
-               new Q1MinCost("TD1"),
-               new Q2DetectingAnomalies("TD2"),
-               new Q3ExchangingMoney("TD3"),
+               //new Q1MinCost("TD1"),
+               //new Q2DetectingAnomalies("TD2"),
+               //new Q3ExchangingMoney("TD3"),
                new Q4FriendSuggestion("TD4")
             };
 
             foreach (var p in problems)
             {
                 TestTools.RunLocalTest("A3", p.Process, p.TestDataName,
-                            Verifier: p.Verifier/*, maxTestCases: 40*/);
+                            p.Verifier);
             }
         }
     }
