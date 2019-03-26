@@ -75,7 +75,7 @@ namespace A3
 
         public int PreVisit;
         public int PostVisit;
-
+        
         public Node(long key)
         {
             this.Key = key;
@@ -84,5 +84,6 @@ namespace A3
             this.AdjacentNodes = new List<(Node,long)>();
             this.Marked = false;
         }
+        
     }
 }

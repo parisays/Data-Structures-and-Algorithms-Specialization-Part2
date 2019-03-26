@@ -12,7 +12,7 @@ namespace A3.Tests
     [TestClass()]
     public class GradedTests
     {
-        [TestMethod(), Timeout(20000)]
+        [TestMethod(), Timeout(180000)]
         [DeploymentItem("TestData", "A3_TestData")]
         public void SolveTest()
         {
@@ -20,13 +20,13 @@ namespace A3.Tests
                new Q1MinCost("TD1"),
                new Q2DetectingAnomalies("TD2"),
                new Q3ExchangingMoney("TD3"),
-               //new Q4FriendSuggestion("TD4") NOT_IMPLEMENTED
+               new Q4FriendSuggestion("TD4")
             };
 
             foreach (var p in problems)
             {
                 TestTools.RunLocalTest("A3", p.Process, p.TestDataName,
-                            Verifier: p.Verifier);
+                            Verifier: p.Verifier/*, maxTestCases: 40*/);
             }
         }
     }
