@@ -83,10 +83,7 @@ namespace A4
                     }
                 }
             }
-
-
-            //int targetPoint = Graph.IndexOf(Graph.Find(n => n.Key == target));
-            //return (Graph[targetPoint].Distance == long.MaxValue) ? -1 : Graph[targetPoint].Distance;
+            
             return -1;
         }
 
