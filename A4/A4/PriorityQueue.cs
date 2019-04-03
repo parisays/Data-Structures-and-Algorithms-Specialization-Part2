@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace A3
+namespace A4
 {
     public class PriorityQueue
     {
@@ -41,7 +41,7 @@ namespace A3
 
         public void Remove(int index)
         {
-            NodesList[index].Distance = long.MinValue;
+            NodesList[index].DistPlusPot = long.MinValue;
             SiftUp(index);
             ExtractMin();
         }
@@ -60,7 +60,6 @@ namespace A3
         {
             while(index>0 && Comparer(NodesList[index], NodesList[Parent(index)]))
             {
-                // swap nodes in the array
                 (NodesList[index], NodesList[Parent(index)]) =
                             (NodesList[Parent(index)], NodesList[index]);
                 
@@ -82,7 +81,6 @@ namespace A3
                 swapingIndex = rightIndex;
             if(swapingIndex != index)
             {
-                // swap Nodes in array
                 (NodesList[index], NodesList[swapingIndex]) =
                         (NodesList[swapingIndex], NodesList[index]);
                 
@@ -90,10 +88,10 @@ namespace A3
             }
         }
 
-        public void ChangePriority(int index, long newPriority)
+        public void ChangePriority(int index, double newPriority)
         {
-            long oldPriority = NodesList[index].Distance;
-            NodesList[index].Distance = newPriority;
+            double oldPriority = NodesList[index].DistPlusPot;
+            NodesList[index].DistPlusPot = newPriority;
 
             if (newPriority < oldPriority)
                 SiftUp(index);
@@ -107,7 +105,7 @@ namespace A3
 
         private bool Comparer(Node node1, Node node2)
         {
-            return node1.Distance < node2.Distance;
+            return node1.DistPlusPot < node2.DistPlusPot;
         }
     }
 }

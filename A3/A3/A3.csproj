@@ -54,7 +54,6 @@
     <Compile Include="Q2DetectingAnomalies.cs" />
     <Compile Include="Q3ExchangingMoney.cs" />
     <Compile Include="Q4FriendSuggestion.cs" />
-    <Compile Include="Q4FriendSuggestion2.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -60,18 +60,4 @@ namespace A4
             return (double)Math.Round(((minST.Sum() * 1_000_000)))/ 1_000_000;
         }
     }
-
-    //public class Point
-    //{
-    //    public long X;
-    //    public long Y;
-    //    public Point Parent;
-
-    //    public Point(long x, long y)
-    //    {
-    //        this.X = x;
-    //        this.Y = y;
-    //        this.Parent = this;
-    //    }
-    //}
 }

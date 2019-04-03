@@ -10,7 +10,9 @@ namespace A3
 {
     public class Q4FriendSuggestion : Processor
     {
-        public Q4FriendSuggestion(string testDataName) : base(testDataName) { }
+        public Q4FriendSuggestion(string testDataName) : base(testDataName)
+        {
+        }
 
         public List<Node> Graph { get; private set; }
         private List<Node> RGraph { get; set; }
@@ -56,8 +58,8 @@ namespace A3
                     if(neighbor.Item1.Distance > forward.Distance + neighbor.Item2)
                     {
                         neighbor.Item1.Previous = forward;
-
-                        if (ForwardHeap.NodesList.Contains(neighbor.Item1))
+                        
+                        if (ForwardHeap.Exists[neighbor.Item1.Key - 1])
                             ForwardHeap.ChangePriority(Array.IndexOf(ForwardHeap.NodesList, neighbor.Item1)
                                 , forward.Distance + neighbor.Item2);
                         else
@@ -79,9 +81,10 @@ namespace A3
                     if(reverse.Distance + neighbor.Item2 < neighbor.Item1.Distance)
                     {
                         neighbor.Item1.Previous = reverse;
-                        if (ReverseHeap.NodesList.Contains(neighbor.Item1))
-                            ReverseHeap.ChangePriority(Array.IndexOf(ReverseHeap.NodesList, neighbor.Item1),
-                                reverse.Distance + neighbor.Item2);
+                        
+                        if (ReverseHeap.Exists[neighbor.Item1.Key - 1])
+                            ReverseHeap.ChangePriority(Array.IndexOf(ReverseHeap.NodesList, neighbor.Item1)
+                                , reverse.Distance + neighbor.Item2);
                         else
                         {
                             neighbor.Item1.Distance = reverse.Distance + neighbor.Item2;
@@ -105,7 +108,7 @@ namespace A3
             
             foreach (var node in ForwardProcss)
             {
-                var reverse = RGraph.Find(n => n.Key == node.Key);
+                var reverse = RGraph.ElementAt((int)node.Key - 1);
 
                 if (node.Distance != long.MaxValue && reverse.Distance != long.MaxValue &&
                         distance > node.Distance + reverse.Distance)
@@ -114,7 +117,8 @@ namespace A3
 
             foreach(var node in ReverseProcess)
             {
-                var forward = Graph.Find(n => n.Key == node.Key);
+                var forward = Graph.ElementAt((int)node.Key - 1);
+
                 if (node.Distance != long.MaxValue && forward.Distance != long.MaxValue &&
                         distance > node.Distance + forward.Distance)
                     distance = node.Distance + forward.Distance;
