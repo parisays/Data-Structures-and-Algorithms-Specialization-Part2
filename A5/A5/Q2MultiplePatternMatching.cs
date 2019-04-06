@@ -26,7 +26,6 @@ namespace A5
 
             BuildPatternsTrie(patterns);
             return SearchForIndxes(text);
-            //throw new NotImplementedException();
         }
 
         private long[] SearchForIndxes(string text)
@@ -193,22 +192,14 @@ namespace A5
         //}
 
 
-        private bool CheckExisting(Point edge) => edge != null;
+        //private bool CheckExisting(Point edge) => edge != null;
     }
 
     public class Point
     {
         public char Label { get; set; }
-        //public int Source { get; set; }
         public List<Point> Children { get; set; }
-
-        //public Point(char label, int source)
-        //{
-        //    Label = label;
-        //    Source = source;
-        //    Children = new List<Point>();
-        //}
-
+        
         public Point(char label)
         {
             Label = label;
