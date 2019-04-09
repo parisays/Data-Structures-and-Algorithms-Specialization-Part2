@@ -33,7 +33,8 @@ namespace A6
                 int index = i;
                 for (int j = 0; j < textSize; j++)
                 {
-                    newCyclicRotation.Insert(j, text[index]);
+                    //newCyclicRotation.Insert(j, text[index]);
+                    newCyclicRotation.Append(text[index], 1);
                     
                     index = (index + 1) % textSize;
                 }
