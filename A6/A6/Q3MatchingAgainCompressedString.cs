@@ -11,8 +11,6 @@ namespace A6
     {
         public Q3MatchingAgainCompressedString(string testDataName) : base(testDataName)
         {
-            this.ExcludeTestCaseRangeInclusive(22, 23);
-            this.ExcludeTestCaseRangeInclusive(25, 30);
         }
 
         public override string Process(string inStr) =>
