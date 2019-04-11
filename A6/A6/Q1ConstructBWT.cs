@@ -11,7 +11,6 @@ namespace A6
     {
         public Q1ConstructBWT(string testDataName) : base(testDataName)
         {
-            //this.ExcludeTestCaseRangeInclusive(11, 50);
         }
 
         public override string Process(string inStr) =>
@@ -20,27 +19,23 @@ namespace A6
 
         private List<string> CyclicRotations { get; set; }
 
-        //private SortedList<string, int> Cycles { get; set; }
-
+        
         public string Solve(string text)
         {
             int textSize = text.Length;
             CyclicRotations = new List<string>();
-            //Cycles = new SortedList<string, int>();
             for (int i = 0; i < textSize; i++)
             {
                 StringBuilder newCyclicRotation = new StringBuilder(textSize);
                 int index = i;
                 for (int j = 0; j < textSize; j++)
                 {
-                    //newCyclicRotation.Insert(j, text[index]);
                     newCyclicRotation.Append(text[index], 1);
                     
                     index = (index + 1) % textSize;
                 }
 
                 CyclicRotations.Add(newCyclicRotation.ToString());
-                //Cycles.Add(newCyclicRotation.ToString(), i);
             }
 
             return GetBurrowsWheelerTransform(textSize);
@@ -53,9 +48,7 @@ namespace A6
             StringBuilder result = new StringBuilder(textSize);
             for (int i = 0; i < textSize; i++)
                 result.Insert(i, CyclicRotations[i][textSize - 1]);
-            //result.Insert(i, Cycles.ElementAt(i).Key.Last());
-
-
+            
             return result.ToString();
         }
     }

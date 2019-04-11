@@ -12,14 +12,14 @@ namespace A6.Tests
     [TestClass()]
     public class GradedTests
     {
-        [TestMethod()/*, Timeout(9000)*/]
+        [TestMethod(), Timeout(9000)]
         [DeploymentItem("TestData", "A6_TestData")]
         public void SolveTest()
         {
             Processor[] problems = new Processor[] {
-                //new Q1ConstructBWT("TD1"),
+                new Q1ConstructBWT("TD1"),
                 new Q2ReconstructStringFromBWT("TD2"),
-                //new Q3MatchingAgainCompressedString("TD3"),
+                new Q3MatchingAgainCompressedString("TD3"),
                 //new Q4ConstructSuffixArray("TD4")
             };
 
