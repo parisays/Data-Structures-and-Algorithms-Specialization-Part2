@@ -18,8 +18,13 @@ namespace A6
 
         public long[] Solve(string text)
         {
-            // write your code here
-            throw new NotImplementedException();
+            SortedList<string, long> suffixes = new SortedList<string, long>();
+            int size = text.Length;
+
+            for (int i = 0; i < size; i++)
+                suffixes.Add(text.Substring(i), i);
+
+            return suffixes.Values.ToArray();
         }
     }
 }

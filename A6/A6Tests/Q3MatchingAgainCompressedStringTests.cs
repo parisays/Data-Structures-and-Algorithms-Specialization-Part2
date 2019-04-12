@@ -11,18 +11,6 @@ namespace A6.Tests
     [TestClass()]
     public class Q3MatchingAgainCompressedStringTests
     {
-        //[TestMethod()]
-        //public void Q3MatchingAgainCompressedStringTest()
-        //{
-
-        //}
-
-        //[TestMethod()]
-        //public void ProcessTest()
-        //{
-
-        //}
-
         [TestMethod()]
         public void SolveTest()
         {
