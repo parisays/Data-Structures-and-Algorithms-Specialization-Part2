@@ -16,7 +16,7 @@ namespace A7
         public override string Process(string inStr) =>
         TestTools.Process(inStr, (Func<String, long[]>)Solve);
 
-        private long[] Solve(string text)
+        public long[] Solve(string text)
         {
             int length = 1;
             int textSize = text.Length;
