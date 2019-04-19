@@ -27,7 +27,7 @@ namespace A7.Tests
             RunTest(new Q2CunstructSuffixArray("TD2"));
         }
 
-        [TestMethod(), Timeout(1500)]
+        [TestMethod(), Timeout(1300)]
         public void SolveTest_Q3()
         {
             //Assert.Inconclusive("Not Solved");

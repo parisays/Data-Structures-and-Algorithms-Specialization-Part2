@@ -12,7 +12,7 @@ namespace A7
         public Q3PatternMatchingSuffixArray(string testDataName) : base(testDataName)
         {
             this.VerifyResultWithoutOrder = true;
-            this.ExcludedTestCases = new HashSet<int>() { 14, 16, 32 };
+            //this.ExcludedTestCases = new HashSet<int>() { 14, 16, 32 };
         }
 
         public override string Process(string inStr) =>
@@ -31,8 +31,8 @@ namespace A7
 
             if (result.Count == 0)
                 result.Add(-1);
-
-            return result.ToArray();
+            
+            return result.Distinct().ToArray();
         }
 
         private List<long> FindOccurrences(string pattern, string text, int textSize, long[] suffixArray)
