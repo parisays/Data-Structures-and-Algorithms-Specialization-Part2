@@ -11,11 +11,11 @@ namespace A8
         public List<Edge> Edges { get; set; }
         public List<int>[] Graph { get; set; }
 
-        public Network(long n)
+        public Network(long nodeCount)
         {
             Edges = new List<Edge>();
-            Graph = new List<int>[n];
-            for (int i = 0; i < n; i++)
+            Graph = new List<int>[nodeCount];
+            for (int i = 0; i < nodeCount; i++)
                 Graph[i] = new List<int>();
         }
 
@@ -23,13 +23,14 @@ namespace A8
         public void AddEdge(int start, int end, long capacity)
         {
             Edge forwardEdge = new Edge(start, end, capacity);
-            Edge backwardEdge = new Edge(start, end, capacity);
+            Edge backwardEdge = new Edge(end, start, 0);
 
             Graph[start].Add(Edges.Count);
             Edges.Add(forwardEdge);
 
             Graph[end].Add(Edges.Count);
             Edges.Add(backwardEdge);
+
         }
 
         public int Size() => Graph.Length;

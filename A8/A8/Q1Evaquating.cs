@@ -11,7 +11,7 @@ namespace A8
     {
         public Q1Evaquating(string testDataName) : base(testDataName)
         {
-            this.ExcludeTestCaseRangeInclusive(34, 38);
+            //this.ExcludeTestCaseRangeInclusive(34, 38);
             //this.ExcludeTestCaseRangeInclusive(1, 2);
         }
 
@@ -37,7 +37,7 @@ namespace A8
             {
                 var result = BFS(network, start, end, size);
 
-                if(!result.Item1)
+                if (!result.Item1)
                     return flow;
 
                 foreach (int id in result.Item2)
@@ -45,20 +45,21 @@ namespace A8
 
                 flow += result.Item3;
             }
-        }
 
+        }
+        
         private (bool, List<int>, long) BFS(Network network, int start, long end, int size)
         {
             long X = long.MaxValue;
             bool existsPath = false;
             long[] distance = Enumerable.Repeat<long>(long.MaxValue, size).ToArray();
             (long, int)[] parent = new (long, int)[size];
-            //List<(long, int)> path = new List<(long, int)>();
             List<int> path = new List<int>();
 
             Queue<long> queue = new Queue<long>();
             distance[start] = 0;
             queue.Enqueue(start);
+
 
             while (queue.Count > 0)
             {
@@ -66,7 +67,8 @@ namespace A8
                 foreach (int id in network.GetIds(currentStartNode))
                 {
                     var currentEdge = network.GetEdge(id);
-                    if (currentEdge.Capacity > 0 && distance[currentEdge.End] == long.MaxValue)
+                    if (currentEdge.Capacity > 0 && distance[currentEdge.End] == long.MaxValue
+                                && currentEdge.End != start)
                     {
                         distance[currentEdge.End] = distance[currentStartNode] + 1;
                         parent[currentEdge.End] = (currentStartNode, id);
@@ -77,7 +79,6 @@ namespace A8
                             int idTemp = id;
                             while (true)
                             {
-                                //path.Add((0, idTemp));
                                 path.Add(idTemp);
                                 long currentX = network.GetEdge(idTemp).Capacity;
                                 X = Math.Min(X, currentX);
