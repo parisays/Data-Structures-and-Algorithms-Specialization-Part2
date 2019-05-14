@@ -11,8 +11,6 @@ namespace A8
     {
         public Q1Evaquating(string testDataName) : base(testDataName)
         {
-            //this.ExcludeTestCaseRangeInclusive(34, 38);
-            //this.ExcludeTestCaseRangeInclusive(1, 2);
         }
 
         public override string Process(string inStr) =>
@@ -24,8 +22,7 @@ namespace A8
                 return 0;
 
             Network network = CreateNetwork(edges, nodeCount);
-            var result = Maxflow(network, 0, nodeCount - 1);
-            return result;
+            return Maxflow(network, 0, nodeCount - 1);
         }
 
         private long Maxflow(Network network, int start, long end)
@@ -52,25 +49,23 @@ namespace A8
         {
             long X = long.MaxValue;
             bool existsPath = false;
-            long[] distance = Enumerable.Repeat<long>(long.MaxValue, size).ToArray();
-            (long, int)[] parent = new (long, int)[size];
+            bool[] marked = new bool[size];
+            (long, int)[] parent = new (long, int)[size]; // end : (start, edgeID)
             List<int> path = new List<int>();
-
             Queue<long> queue = new Queue<long>();
-            distance[start] = 0;
+            
+            marked[start] = true;
             queue.Enqueue(start);
-
-
+            
             while (queue.Count > 0)
             {
                 long currentStartNode = queue.Dequeue();
                 foreach (int id in network.GetIds(currentStartNode))
                 {
                     var currentEdge = network.GetEdge(id);
-                    if (currentEdge.Capacity > 0 && distance[currentEdge.End] == long.MaxValue
-                                && currentEdge.End != start)
+                    if (currentEdge.Capacity > 0 && !marked[currentEdge.End] && currentEdge.End != start)
                     {
-                        distance[currentEdge.End] = distance[currentStartNode] + 1;
+                        marked[currentEdge.End] = true;
                         parent[currentEdge.End] = (currentStartNode, id);
                         queue.Enqueue(currentEdge.End);
 
@@ -79,9 +74,9 @@ namespace A8
                             int idTemp = id;
                             while (true)
                             {
-                                path.Add(idTemp);
+                                path.Add(idTemp); // creating the path from sink to source
                                 long currentX = network.GetEdge(idTemp).Capacity;
-                                X = Math.Min(X, currentX);
+                                X = Math.Min(X, currentX); // getting minimum X
                                 if (currentStartNode == start)
                                     break;
 
@@ -97,6 +92,7 @@ namespace A8
             }
             return (existsPath, path, X);
         }
+        
 
         public Network CreateNetwork(long[][] edges, long nodeCount)
         {

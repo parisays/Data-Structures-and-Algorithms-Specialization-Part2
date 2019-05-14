@@ -11,8 +11,6 @@ namespace A8
     {
         public Q2Airlines(string testDataName) : base(testDataName)
         {
-            //this.ExcludeTestCaseRangeInclusive(1, 5);
-            //this.ExcludeTestCaseRangeInclusive(21, 53);
         }
 
         public override string Process(string inStr) =>
@@ -25,8 +23,7 @@ namespace A8
         {
             Network network = ConstructNetwork(flightCount, crewCount, info);
             FindMatching(network, 0, network.Size() - 1, flightCount);
-            long[] result = AssignJobs(network, flightCount);
-            return result;
+            return AssignJobs(network, flightCount);
             
         }
         
@@ -53,26 +50,27 @@ namespace A8
 
         private void FindMatching(Network network, int source, int sink, long flightCount)
         {
-            long flow = 0;
             int size = network.Size();
             long[] predecessors = new long[size];
 
             do
             {
-                predecessors = BFS(network, source, sink, size, predecessors);
+                BFS(network, source, sink, size,ref predecessors);
 
                 if(predecessors[sink] != -1)
                 {
                     long X = long.MaxValue;
-                    for (long node = predecessors[sink]; node != -1;
-                                    node = predecessors[network.GetEdge((int)node).Start])
-                        X = Math.Min(X, network.GetEdge((int)node).Capacity);
 
-                    for (long node = predecessors[sink]; node != -1;
-                                    node = predecessors[network.GetEdge((int)node).Start])
-                        network.AddFlow(X, (int)node);
+                    // finding minimum X
+                    for (long edgeID = predecessors[sink]; edgeID != -1;
+                                    edgeID = predecessors[network.GetEdge((int)edgeID).Start])
+                        X = Math.Min(X, network.GetEdge((int)edgeID).Capacity);
+                    
 
-                    flow += X;
+                    for (long edgeID = predecessors[sink]; edgeID != -1;
+                                    edgeID = predecessors[network.GetEdge((int)edgeID).Start])
+                        network.AddFlow(X, (int)edgeID);
+                    
                 }
                 
 
@@ -80,7 +78,7 @@ namespace A8
             
         }
 
-        private long[] BFS(Network network, int source, int sink, int size,long[] predecessors)
+        private void BFS(Network network, int source, int sink, int size,ref long[] predecessors)
         {
             Queue<long> queue = new Queue<long>();
             predecessors = Enumerable.Repeat<long>(-1, size).ToArray();
@@ -103,7 +101,7 @@ namespace A8
                 }
             }
 
-            return predecessors;
+            //return predecessors;
 
         }
 

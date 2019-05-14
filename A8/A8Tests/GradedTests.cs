@@ -13,14 +13,14 @@ namespace A8.Tests
     [TestClass()]
     public class GradedTests
     {
-        [TestMethod()/*, Timeout(2000)*/]
+        [TestMethod(), Timeout(2000)]
         public void SolveTest_Q1Evaquating()
         {
             //Assert.Inconclusive("A8.Q1 Not Solved");
             RunTest(new Q1Evaquating("TD1"));
         }
 
-        [TestMethod()/*, Timeout(2000)*/]
+        [TestMethod(), Timeout(2000)]
         public void SolveTest_Q2Airlines()
         {
             //Assert.Inconclusive("A8.Q2 Not Solved");
