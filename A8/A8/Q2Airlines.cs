@@ -15,10 +15,11 @@ namespace A8
 
         public override string Process(string inStr) =>
             TestTools.Process(inStr, (Func<long, long, long[][], long[]>)Solve);
-
-
+        
         private long[][] Graph { get; set; }
         private long[] Parents { get; set; }
+
+
         public virtual long[] Solve(long flightCount, long crewCount, long[][] info)
         {
             Network network = ConstructNetwork(flightCount, crewCount, info);
@@ -48,44 +49,46 @@ namespace A8
             return result;
         }
 
-        private void FindMatching(Network network, int source, int sink, long flightCount)
+        private void FindMatching(Network network, int start, int end, long flightCount)
         {
             int size = network.Size();
-            long[] predecessors = new long[size];
+            long[] parent = new long[size];
 
             do
             {
-                BFS(network, source, sink, size,ref predecessors);
+                BFS(network, start, end, size,ref parent);
 
-                if(predecessors[sink] != -1)
+                if(parent[end] != -1)
                 {
                     long X = long.MaxValue;
 
                     // finding minimum X
-                    for (long edgeID = predecessors[sink]; edgeID != -1;
-                                    edgeID = predecessors[network.GetEdge((int)edgeID).Start])
+                    for (long edgeID = parent[end]; edgeID != -1;
+                                    edgeID = parent[network.GetEdge((int)edgeID).Start])
                         X = Math.Min(X, network.GetEdge((int)edgeID).Capacity);
                     
 
-                    for (long edgeID = predecessors[sink]; edgeID != -1;
-                                    edgeID = predecessors[network.GetEdge((int)edgeID).Start])
+                    for (long edgeID = parent[end]; edgeID != -1;
+                                    edgeID = parent[network.GetEdge((int)edgeID).Start])
                         network.AddFlow(X, (int)edgeID);
                     
                 }
                 
 
-            } while (predecessors[sink] != -1);
+            } while (parent[end] != -1);
             
         }
 
-        private void BFS(Network network, int source, int sink, int size,ref long[] predecessors)
+        private void BFS(Network network, int start, int end, int size, ref long[] parent)
         {
             Queue<long> queue = new Queue<long>();
-            predecessors = Enumerable.Repeat<long>(-1, size).ToArray();
+            parent = Enumerable.Repeat<long>(-1, size).ToArray();
+            bool[] marked = new bool[size];
 
-            queue.Enqueue(source);
+            queue.Enqueue(start);
+            marked[start] = true;
 
-            while(queue.Count > 0)
+            while (queue.Count > 0)
             {
                 long current = queue.Dequeue();
 
@@ -93,16 +96,15 @@ namespace A8
                 {
                     Edge e = network.GetEdge(id);
                     
-                    if(predecessors[e.End] == -1 && e.Capacity > 0 && e.End != source)
+                    if(parent[e.End] == -1 && e.Capacity > 0 && !marked[e.End])
                     {
-                        predecessors[e.End] = id;
+                        parent[e.End] = id;
                         queue.Enqueue(e.End);
+                        marked[e.End] = true;
                     }
                 }
             }
-
-            //return predecessors;
-
+            
         }
 
         private Network ConstructNetwork(long flightCount, long crewCount, long[][] adjMatrix)

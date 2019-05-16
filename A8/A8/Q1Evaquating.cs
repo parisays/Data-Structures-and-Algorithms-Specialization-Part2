@@ -21,7 +21,7 @@ namespace A8
             if (edgeCount == 0)
                 return 0;
 
-            Network network = CreateNetwork(edges, nodeCount);
+            Network network = ConstructNetwork(edges, nodeCount);
             return Maxflow(network, 0, nodeCount - 1);
         }
 
@@ -34,21 +34,20 @@ namespace A8
             {
                 var result = BFS(network, start, end, size);
 
-                if (!result.Item1)
+                if (result.Item1.Count == 0)
                     return flow;
 
-                foreach (int id in result.Item2)
-                    network.AddFlow(result.Item3, id);
+                foreach (int id in result.Item1)
+                    network.AddFlow(result.Item2, id);
 
-                flow += result.Item3;
+                flow += result.Item2;
             }
 
         }
         
-        private (bool, List<int>, long) BFS(Network network, int start, long end, int size)
+        private (List<int>, long) BFS(Network network, int start, long end, int size)
         {
             long X = long.MaxValue;
-            bool existsPath = false;
             bool[] marked = new bool[size];
             (long, int)[] parent = new (long, int)[size]; // end : (start, edgeID)
             List<int> path = new List<int>();
@@ -63,7 +62,7 @@ namespace A8
                 foreach (int id in network.GetIds(currentStartNode))
                 {
                     var currentEdge = network.GetEdge(id);
-                    if (currentEdge.Capacity > 0 && !marked[currentEdge.End] && currentEdge.End != start)
+                    if (currentEdge.Capacity > 0 && !marked[currentEdge.End])
                     {
                         marked[currentEdge.End] = true;
                         parent[currentEdge.End] = (currentStartNode, id);
@@ -72,11 +71,11 @@ namespace A8
                         if (currentEdge.End == end)
                         {
                             int idTemp = id;
+
                             while (true)
                             {
                                 path.Add(idTemp); // creating the path from sink to source
-                                long currentX = network.GetEdge(idTemp).Capacity;
-                                X = Math.Min(X, currentX); // getting minimum X
+                                X = Math.Min(X, network.GetEdge(idTemp).Capacity); // finding minimum X
                                 if (currentStartNode == start)
                                     break;
 
@@ -84,17 +83,16 @@ namespace A8
                                 currentStartNode = parent[currentStartNode].Item1;
                             }
 
-                            existsPath = true;
-                            return (existsPath, path, X);
+                            return (path, X);
                         }
                     }
                 }
             }
-            return (existsPath, path, X);
+            return (path, X);
         }
         
 
-        public Network CreateNetwork(long[][] edges, long nodeCount)
+        public Network ConstructNetwork(long[][] edges, long nodeCount)
         {
             Network network = new Network(nodeCount);
 
