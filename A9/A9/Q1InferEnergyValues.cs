@@ -21,11 +21,11 @@ namespace A9
 
         private double[] RowReduction(Equation equation)
         {
-            bool[] hasZeroRows = new bool[equation.Size];
-            bool[] hasZeroCols = new bool[equation.Size];
+            bool[] hasZeroRows = new bool[equation.RowsCount];
+            bool[] hasZeroCols = new bool[equation.RowsCount];
 
             //convert the matrix into an upper triangular matrix
-            for (int i=0; i<equation.Size; i++)
+            for (int i=0; i<equation.RowsCount; i++)
             {
                 Pivot pivot = SelectPivot(equation, hasZeroRows, hasZeroCols);
                 SwapRows(equation, ref hasZeroRows, pivot);
@@ -40,7 +40,7 @@ namespace A9
 
         private double[] StandardizePrecision(Equation equation)
         {
-            for(int i=0; i<equation.Size; i++)
+            for(int i=0; i<equation.RowsCount; i++)
             {
                 double fraction = equation.Intercepts[i] - Math.Truncate(equation.Intercepts[i]);
 
@@ -68,7 +68,7 @@ namespace A9
 
         private void BackSubstitution(Equation equation)
         {
-            for(int i = equation.Size - 1; i>= 0; i--)
+            for(int i = equation.RowsCount - 1; i>= 0; i--)
             {
                 double value = equation.Intercepts[i];
                 for(int j=0; j<i; j++)
@@ -85,19 +85,19 @@ namespace A9
             //Scaling
             double divisor = equation.Coefficients[pivot.Row, pivot.Column];
 
-            for (int i = pivot.Column; i < equation.Size; i++)
+            for (int i = pivot.Column; i < equation.RowsCount; i++)
                 equation.Coefficients[pivot.Row, i] /= divisor;
             equation.Intercepts[pivot.Row] /= divisor;
 
 
             //Adding or Subtracting
-            for(int i = pivot.Row + 1; i<equation.Size; i++)
+            for(int i = pivot.Row + 1; i<equation.RowsCount; i++)
             {
                 double multiple = equation.Coefficients[i, pivot.Column];
 
                 equation.Intercepts[i] -= (multiple * equation.Intercepts[pivot.Row]);
 
-                for (int j = pivot.Column; j < equation.Size; j++)
+                for (int j = pivot.Column; j < equation.RowsCount; j++)
                     equation.Coefficients[i, j] -= (multiple * equation.Coefficients[pivot.Row, j]);
             }
 
@@ -109,7 +109,7 @@ namespace A9
 
         private void SwapRows(Equation equation, ref bool[] hasZeroRows, Pivot pivot)
         {
-            for (int i = 0; i < equation.Size; i++)
+            for (int i = 0; i < equation.RowsCount; i++)
                 (equation.Coefficients[pivot.Row, i], equation.Coefficients[pivot.Column, i]) =
                                 (equation.Coefficients[pivot.Column, i], equation.Coefficients[pivot.Row, i]);
 
@@ -130,7 +130,7 @@ namespace A9
                 p.Column += 1;
 
             double maxValue = 0;
-            for(int from = p.Row; from< equation.Size; from++)
+            for(int from = p.Row; from< equation.RowsCount; from++)
                 if(Math.Abs(equation.Coefficients[from, p.Column])> Math.Abs(maxValue))
                 {
                     maxValue = equation.Coefficients[from, p.Column];
