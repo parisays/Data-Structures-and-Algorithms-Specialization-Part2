@@ -10,12 +10,17 @@ using TestCommon;
 
 namespace A10
 {
+    /// <summary>
+    /// Reduce the real-world problem about
+    /// assigning frequencies to the transmitting towers of the cells in a GSM
+    /// network to a problem of proper coloring a graph into 3 colors.
+    /// Then design and implement an algorithm to reduce this problem to an
+    /// instance of SAT.
+    /// </summary>
     public class Q1FrequencyAssignment : Processor
     {
         public Q1FrequencyAssignment(string testDataName) : base(testDataName)
         {
-            //this.ExcludeTestCaseRangeInclusive(1, 1);
-            //this.ExcludeTestCaseRangeInclusive(3, 31);
         }
 
         private readonly int[] Colors = new int[] { 1, 2, 3 };
