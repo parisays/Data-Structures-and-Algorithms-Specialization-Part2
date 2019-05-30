@@ -162,9 +162,6 @@ namespace A9
             for (int i = 0; i < equation.RowsCount; i++)
             {
                 Pivot pivot = SelectPivot(equation, hasZeroRows, hasZeroCols);
-                if (equation.Coefficients[pivot.Row, pivot.Column] == 0)
-                    break;
-
                 SwapRows(equation, ref hasZeroRows, pivot);
                 ForwardElimination(equation, pivot, ref hasZeroRows, ref hasZeroCols);
             }
