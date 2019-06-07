@@ -21,7 +21,24 @@ namespace A11
 
         public virtual Tuple<long, long[]> Solve(long nodeCount, long[][] edges)
         {
+            long[,] graph = CreateGraph(nodeCount, edges);
             throw new NotImplementedException();
-        }       
+        }
+        
+
+        private long[,] CreateGraph(long nodeCount, long[][] edges)
+        {
+            long[,] graph = new long[nodeCount, nodeCount];
+            foreach(var edge in edges)
+            {
+                long left = edge[0];
+                long right = edge[1];
+                long weight = edge[2];
+
+                graph[left - 1, right - 1] = weight;
+                graph[right - 1, left - 1] = weight;
+            }
+            return graph;
+        }
     }
 }

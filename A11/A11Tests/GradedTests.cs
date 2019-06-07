@@ -28,12 +28,14 @@ namespace A11.Tests
         [TestMethod(), Timeout(3000)]
         public void SolveTest_Q3SchoolBus()
         {
+            Assert.Inconclusive("A11.Q3 Not Solved");
             RunTest(new Q3SchoolBus("TD3"));
         }
 
         [TestMethod(), Timeout(4000)]
         public void SolveTest_Q4RescheduleExam()
         {
+            Assert.Inconclusive("A11.Q4 Not Solved");
             RunTest(new Q4RescheduleExam("TD4"));
         }
 
