@@ -11,7 +11,6 @@ namespace Exam2
     {
         public Q1LatinSquareSAT(string testDataName) : base(testDataName)
         {
-            //this.ExcludeTestCaseRangeInclusive(41, 54);
         }
 
         public override string Process(string inStr) =>
@@ -25,9 +24,10 @@ namespace Exam2
         {
             StringBuilder builder = new StringBuilder();
             int count = 0;
-            count+=CellConstraint(dim, ref builder);
-            count+=RowConstraint(dim, ref builder);
-            count+=ColumnConstraint(dim, ref builder);
+
+            count+= CellConstraint(dim, ref builder);
+            count+= RowConstraint(dim, ref builder);
+            count+= ColumnConstraint(dim, ref builder);
             
             return ConstructFormula(dim, square, ref builder, ref count);
         }
@@ -43,8 +43,8 @@ namespace Exam2
                         count++;
                         builder.Append(Varnum(i, j, square[i, j].Value, dim).ToString() + "\n");
                     }
-                        
                 }
+
             return Math.Pow(dim, 3).ToString() + " " + count.ToString() + "\n" + builder.ToString();
         }
         
@@ -61,6 +61,7 @@ namespace Exam2
 
                     count+=ExactlyOneOf(literals, ref builder);
                 }
+
             return count;
         }
 
@@ -76,6 +77,7 @@ namespace Exam2
 
                     count+=ExactlyOneOf(literals, ref builder);
                 }
+
             return count;
         }
 
@@ -93,6 +95,7 @@ namespace Exam2
                     count+=ExactlyOneOf(literals, ref builder);
                         
                 }
+
             return count;
         }
 
