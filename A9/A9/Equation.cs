@@ -12,6 +12,7 @@ namespace A9
         public double[] Intercepts { get; set; }
         public int RowsCount { get; set; }
         public int ColsCount { get; set; }
+        public double[] Function { get; set; }
         private const double Infinity = 1e+9;
 
         public Equation() { }
@@ -32,40 +33,68 @@ namespace A9
                     Coefficients[i, j] = matrix[i, j];
             }
         }
+        
 
-        public Equation(long rowsCount,long colsCount, double[,] matrix)
+        public Equation(long rowsCount,long colsCount, double[,] matrix, bool simplex=false)
         {
-            // given inequalities + non negative amounts + infinity
-            RowsCount = (int)rowsCount + (int)colsCount;
-            ColsCount = (int)colsCount - 1;
-
-            Coefficients = new double[RowsCount, ColsCount];
-            Intercepts = new double[RowsCount];
-
-            // given inequalities
-            for (int i = 0; i < rowsCount; i++)
+            if(!simplex)
             {
-                Intercepts[i] = matrix[i, colsCount - 1];
+                // given inequalities + non negative amounts + infinity
+                RowsCount = (int)rowsCount + (int)colsCount;
+                ColsCount = (int)colsCount - 1;
 
-                for (int j = 0; j < colsCount - 1; j++)
-                    Coefficients[i, j] = matrix[i, j];
+                Coefficients = new double[RowsCount, ColsCount];
+                Intercepts = new double[RowsCount];
+
+                // given inequalities
+                for (int i = 0; i < rowsCount; i++)
+                {
+                    Intercepts[i] = matrix[i, colsCount - 1];
+
+                    for (int j = 0; j < colsCount - 1; j++)
+                        Coefficients[i, j] = matrix[i, j];
+                }
+
+
+                // infinity
+                for (int i = 0; i < ColsCount; i++)
+                    Coefficients[RowsCount - 1, i] = 1;
+
+                Intercepts[RowsCount - 1] = Infinity;
+
+
+                // non negative amounts 
+                for (long row = rowsCount, col = 0; row < RowsCount - 1 && col < ColsCount; col++, row++)
+                {
+                    Coefficients[row, col] = -1;
+                    Intercepts[row] = 0;
+                }
+            }
+            else
+            {
+                // number of costraints 
+                RowsCount = (int)rowsCount;
+                // variables + slack varibles + artificial variables
+                ColsCount = (int)(2 * rowsCount + colsCount);
+
+                Coefficients = new double[RowsCount, ColsCount];
+                Intercepts = new double[rowsCount + 2];
+                Function = new double[ColsCount];
+
+                // given inequalities
+                for (int i = 0; i < rowsCount; i++)
+                {
+                    Intercepts[i] = matrix[i, colsCount];
+
+                    for (int j = 0; j < colsCount; j++)
+                        Coefficients[i, j] = matrix[i, j];
+                    
+                }
+
+                for (int j = 0; j < colsCount; j++)
+                    Function[j] = matrix[rowsCount, j];
             }
 
-
-            // infinity
-            for (int i = 0; i < ColsCount; i++)
-                Coefficients[RowsCount - 1, i] = 1;
-
-            Intercepts[RowsCount - 1] = Infinity;
-
-
-            // non negative amounts 
-            for (long row = rowsCount, col = 0; row< RowsCount - 1 && col < ColsCount; col++, row++)
-            {
-                Coefficients[row, col] = -1;
-                Intercepts[row] = 0;
-            }
-            
         }
 
         public Equation CreateSubEquation(IList<int> set)
