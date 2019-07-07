@@ -33,8 +33,6 @@ namespace A9
             Equation equation = new Equation(c , v , matrix1, true);
             CurrentPhase = Phase.None;
             CurrentSolution = Solution.None;
-            //ResultVariables = new double[equation.ColsCount];
-            //SecondaryRow = new double[equation.ColsCount];
 
             bool negConstraint = CheckForNegativeConstraints(equation);
             PrepareTable(equation, c, v, negConstraint);
