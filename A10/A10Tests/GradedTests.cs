@@ -30,7 +30,7 @@ namespace A10.Tests
         [TestMethod(), Timeout(1000)]
         public void SolveTest_Q3AdBudgetAllocation()
         {
-            Assert.Inconclusive("A10.Q3 Not Solved");
+            //Assert.Inconclusive("A10.Q3 Not Solved");
             RunTest(new Q3AdBudgetAllocation("TD3"));
         }
 
