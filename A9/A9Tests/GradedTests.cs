@@ -30,7 +30,7 @@ namespace A9.Tests
         [TestMethod(), Timeout(2000)]
         public void SolveTest_Q3OnlineAdAllocation()
         {
-            Assert.Inconclusive("A9.Q3 Not Solved");
+            //Assert.Inconclusive("A9.Q3 Not Solved");
             RunTest(new Q3OnlineAdAllocation("TD3"));
         }
 
