@@ -13,8 +13,7 @@ namespace A9
 
         public Q3OnlineAdAllocation(string testDataName) : base(testDataName)
         {
-            this.ExcludedTestCases = new HashSet<int>() { 5, 33, 38, 39, 41, 42, 43 };
-            //this.ExcludeTestCaseRangeInclusive(1, 37);
+            this.ExcludedTestCases = new HashSet<int>() { 5, 33, 41 };
         }
 
         public override string Process(string inStr) =>
@@ -32,9 +31,10 @@ namespace A9
         public string Solve(int c, int v, double[,] matrix1)
         {
             Equation equation = new Equation(c , v , matrix1, true);
-
-            ResultVariables = new double[equation.ColsCount];
-            SecondaryRow = new double[equation.ColsCount];
+            CurrentPhase = Phase.None;
+            CurrentSolution = Solution.None;
+            //ResultVariables = new double[equation.ColsCount];
+            //SecondaryRow = new double[equation.ColsCount];
 
             bool negConstraint = CheckForNegativeConstraints(equation);
             PrepareTable(equation, c, v, negConstraint);
@@ -82,28 +82,12 @@ namespace A9
                 solution.Append(
                     resultIndex == -1 ? 0 : RegulateResult(equation.Intercepts[resultIndex])
                     );
-
-                //double sum = 0;
-                //int resultIndex = 0;
-                //for (int j = 0; j < equation.RowsCount; ++j)
-                //{
-                //    if (ResultVariables[j] >= 0)
-                //        sum += Math.Abs(equation.Coefficients[j, i]);
-
-                //    if (Math.Abs(equation.Coefficients[j, i] - 1) < Epsilon)
-                //        resultIndex = j;
-                //}
-
-                //solution.Append(
-                //    (sum - 1 > Epsilon) ? 0 : RegulateResult(equation.Intercepts[resultIndex])
-                //    );
-
+                
                 if (i != v - 1)
                     solution.Append(" ");
             }
 
             return solution.ToString();
-            //return solution.Remove(solution.Length - 1, 1).ToString();
         }
 
         private double RegulateResult(double number)
