@@ -15,10 +15,6 @@ namespace A8
 
         public override string Process(string inStr) =>
             TestTools.Process(inStr, (Func<long, long, long[][], long[]>)Solve);
-        
-        private long[][] Graph { get; set; }
-        private long[] Parents { get; set; }
-
 
         public virtual long[] Solve(long flightCount, long crewCount, long[][] info)
         {
